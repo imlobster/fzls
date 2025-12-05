@@ -1,0 +1,15 @@
+# cmake
+/build/
+
+# tests
+/test/
+
+# notes
+/notes/
+
+# backups
+*.bak
+*.old
+
+# binary files
+/bin/
