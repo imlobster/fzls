@@ -1,6 +1,7 @@
 #include <stdlib.h>
-#include <stdio.h>
+#include <stdint.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "errors.h"
 #include "funit.h"
@@ -8,6 +9,17 @@
 #include "fmt.h"
 
 #define FILENAME_PADDING 2
+
+
+#define FILECOLOR_REGULAR    38
+#define FILECOLOR_DIRECTORY  34
+#define FILECOLOR_SYMLINK    36
+#define FILECOLOR_EXECUTABLE 32
+
+#define FILECOLOR_BROKEN     31
+
+
+#define FILENAME_DIFF_HIGHLIGHT "7"
 
 int main(int argc, char** argv) {
 	FUnit* units = NULL; size_t unitsc = 0;
@@ -35,32 +47,41 @@ int main(int argc, char** argv) {
 	// Sort alphabetical
 	qsort(units, unitsc, sizeof(FUnit), funit_name_compare);
 
+	calculate_prefixes(unitsc, units);
+
 	// TODO: move it somewhere
 	{
-		size_t displayed = 0;
 		col_width += FILENAME_PADDING;
 
 		int cols = term_width / col_width;
 		if (cols == 0) cols = 1;
 		size_t rows = (unitsc + cols - 1) / cols;
 
-		fprintf(stdout, "\033[0m");
-
 		for (size_t r = 0; r < rows; r++) {
 		for (size_t c = 0; c < cols; c++) {
 			size_t i = r + c * rows;
 			if (i < unitsc) {
+				uint8_t color = 0;
+
 				switch(units[i].type) {
 					case FREGULAR:
-						if(!units[i].exe) { fprintf(stdout, "\033[0;0m%s\033[m", units[i].name); }
-						else { fprintf(stdout, "\033[1;32m%s\033[m", units[i].name); }
+						if(!units[i].exe) { color = FILECOLOR_REGULAR; }
+						else { color = FILECOLOR_EXECUTABLE; }
 					break;
-					case FDIRECTORY: fprintf(stdout, "\033[1;34m%s\033[m", units[i].name); break;
-					case FSYMLINK: fprintf(stdout, "\033[1;36m%s\033[m", units[i].name); break;
-					default: fprintf(stdout, "\033[1;31m%s\033[m", units[i].name); break;
+					case FDIRECTORY: color = FILECOLOR_DIRECTORY; break;
+					case FSYMLINK: color = FILECOLOR_SYMLINK; break;
+					default: color = FILECOLOR_BROKEN; break;
 				}
-				++displayed;
 
+				fprintf(stdout, "\033[" FILENAME_DIFF_HIGHLIGHT ";%hhum%.*s\033[0;%hhum%s\033[m",
+						color,
+
+						(int)units[i].diffw,
+						units[i].name,
+
+						color,
+
+						units[i].name + units[i].diffw);
 				// Offset
 				for(size_t k = units[i].namedw; k < col_width; ++k) { fputc(' ', stdout); }
 			}

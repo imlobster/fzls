@@ -14,6 +14,7 @@ typedef enum FType {
 typedef struct FUnit {
 	char*  name;   // filename
 	size_t namedw; // display width of the filename
+	size_t diffw;  // real width of the filename unique prefix
 	FType  type;   // file kind
 	bool   dot;    // is the filename begins with '.'
 	bool   exe;    // is the file is executable

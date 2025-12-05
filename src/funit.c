@@ -19,15 +19,7 @@
 int funit_name_compare(const void* ilhs, const void* irhs) {
 	const FUnit* lhs = (const FUnit *)ilhs;
 	const FUnit* rhs = (const FUnit *)irhs;
-	return strncmp(
-		lhs->name,
-		rhs->name,
-		(
-			lhs->namedw > rhs->namedw
-			 ? lhs->namedw
-			 : rhs->namedw
-		)
-	);
+	return strcmp(lhs->name, rhs->name);
 }
 
 void free_units(size_t ic, FUnit* iunits) {
@@ -71,7 +63,7 @@ Error fetch_for_units(const char* ipath, size_t* oc, FUnit** ounits, size_t* oma
 			if(units[s_count].name == NULL) { free_units(s_count, units); return ERR_ALLOC_FAILED; }
 
 			// Skip '.' and '..' as they are useless for 'fzls' purposes
-			if(strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) { continue; }
+			if(strcmp(find_data.cFileName, ".") == 0 || strcmp(find_data.cFileName, "..") == 0) { continue; }
 
 			// Take name width and calculate longest
 			{
