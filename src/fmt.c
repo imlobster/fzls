@@ -18,35 +18,49 @@ int count_chars_encodeagnostic(const char* is) {
 	} return w;
 }
 
+size_t common_diffw_(const char* ilhs, const char* irhs) {
+	size_t w = 0;
+	while(
+		ilhs[w] && irhs[w]
+		&& ilhs[w] == irhs[w]
+	) { ++w; }
+	return w;
+}
+
 void calculate_prefixes(size_t ic, FUnit* iunits) {
-	// Iterate through every unit
+	// Iterate through every file unit
 	for(size_t i = 0; i < ic; ++i) {
 		size_t namew = strlen(iunits[i].name);
+		size_t diffw = 0;
 
-		// Iterate through every byte in the current unit filename
-		for(size_t diffw = 1; diffw <= namew; ++diffw) {
-			size_t matches = 0;
+		// Iterate through the name string
+		for(size_t w = 1; w <= namew; ++w) {
+			size_t max_commonw = namew;
 
-			// Compare current byte to others
+			// Iterate through every file unit
 			for(size_t j = 0; j < ic; ++j) {
 				if(i == j) { continue; }
-				if(strncmp(iunits[i].name, iunits[j].name, diffw) == 0) { ++matches; }
+
+				// If the other file is started with this->prefix
+				if(strncmp(iunits[i].name, iunits[j].name, w) == 0) {
+					size_t commonw = common_diffw_(iunits[i].name, iunits[j].name);
+					if(commonw < max_commonw) { max_commonw = commonw; }
+				}
 			}
 
-			// If found unique prefix
-			if(matches == 0) {
-				while(
-					diffw < namew &&
-					(iunits[i].name[diffw] & 0xC0) == 0x80 // check for the continuation byte
-				) { ++diffw; }
-				// Found prefix
-				iunits[i].diffw = diffw;
-				break;
-			}
+			// If the common diff is equal to this->name
+			if(max_commonw == namew) { diffw = w; break; }
 		}
 
-		if(iunits[i].diffw == 0) { iunits[i].diffw = namew; }
-	}
+		if(diffw == 0) { diffw = namew; }
 
+		// Eat UTF-8
+		while(
+			diffw < namew &&
+			(iunits[i].name[diffw] & 0xC0) == 0x80
+		) { ++diffw; }
+
+		iunits[i].diffw = diffw;
+	}
 	return;
 }

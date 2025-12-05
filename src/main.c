@@ -10,16 +10,15 @@
 
 #define FILENAME_PADDING 2
 
-
-#define FILECOLOR_REGULAR    38
+#define FILECOLOR_REGULAR    39
 #define FILECOLOR_DIRECTORY  34
 #define FILECOLOR_SYMLINK    36
 #define FILECOLOR_EXECUTABLE 32
 
 #define FILECOLOR_BROKEN     31
 
-
-#define FILENAME_DIFF_HIGHLIGHT "7"
+#define FILENAME_DIFF_ATTR    "7"
+#define FILENAME_DEFAULT_ATTR "0"
 
 int main(int argc, char** argv) {
 	FUnit* units = NULL; size_t unitsc = 0;
@@ -73,15 +72,23 @@ int main(int argc, char** argv) {
 					default: color = FILECOLOR_BROKEN; break;
 				}
 
-				fprintf(stdout, "\033[" FILENAME_DIFF_HIGHLIGHT ";%hhum%.*s\033[0;%hhum%s\033[m",
-						color,
+				fprintf(stdout,
+					"\033[0;"
+						FILENAME_DIFF_ATTR
+					";%hhum%.*s\033[0;"
+						FILENAME_DEFAULT_ATTR
+					";%hhum%s\033[0m",
 
-						(int)units[i].diffw,
-						units[i].name,
+					color,
 
-						color,
+					(int)units[i].diffw,
+					units[i].name,
 
-						units[i].name + units[i].diffw);
+					color,
+
+					units[i].name + units[i].diffw
+				);
+
 				// Offset
 				for(size_t k = units[i].namedw; k < col_width; ++k) { fputc(' ', stdout); }
 			}
