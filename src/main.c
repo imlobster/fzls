@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
 
 	{ // Get files
 		Error err = fetch_for_units(cfg.all, cfg.path, &unitsc, &units, &colw);
-		if(log_error(err) != 0) { exit(err); }
+		if(log_error(err) != 0) { free_units(unitsc, units); exit(err); }
 	}
 
 	// Sort alphabetical

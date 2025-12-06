@@ -22,8 +22,7 @@ Error get_config_from_args(int ic, char** iv, Config* ocfg) {
 		if(CHECK_FLAG("-?", "--help")) {
 			fprintf(stdout,
 "fzls: usage:\n\t-a/--all         show dotted files\n\t-c/--color       enable colors\n\t-w N/--width N   specify terminal width\n\t-1/--one-column  display in one column\n\n\t--               stop arguments parsing, promising the next argument will be path\n\n\t-?/--help        this text\n"
-			);
-			exit(0);
+			); exit(0);
 		}
 		else if(CHECK_FLAG("-a", "--all"))        { ocfg->all = true; }
 		else if(CHECK_FLAG("-c", "--color"))      { ocfg->colors = true; }
