@@ -5,7 +5,7 @@ printf "analyzing...\n\n"
 match_npragmaonce=$(find . -type f -name '*.h' -exec awk 'FNR==1{sub(/\r$/,""); if($0!="#pragma once") printf "\t%s\n", FILENAME}' {} +)
 
 if [ -n "$match_npragmaonce" ]; then
-	printf "\n\e[1;31mfounded header without '#pragma once'!\e[0m\n"
+	printf "\n\033[1;31mfounded header without '#pragma once'!\033[m\n"
 	printf "%s\n\n" "$match_npragmaonce"
 fi
 

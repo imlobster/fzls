@@ -26,6 +26,7 @@ int funit_name_compare(
 );
 
 Error fetch_for_units(
+	bool        iidots, // include dotted files
 	const char* ipath,  // path to be fetched
 	size_t*     oc,     // total of fetched units
 	FUnit**     ounits, // units array

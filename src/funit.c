@@ -28,7 +28,7 @@ void free_units(size_t ic, FUnit* iunits) {
 	free(iunits); return;
 }
 
-Error fetch_for_units(const char* ipath, size_t* oc, FUnit** ounits, size_t* omaxdw) {
+Error fetch_for_units(bool iidots, const char* ipath, size_t* oc, FUnit** ounits, size_t* omaxdw) {
 	#define GROWTH_FACTOR 4
 	size_t s_capacity = 16;
 	size_t s_count = 0;
@@ -58,12 +58,15 @@ Error fetch_for_units(const char* ipath, size_t* oc, FUnit** ounits, size_t* oma
 				units = new_units;
 			}
 
-			// Take name
-			units[s_count].name = strdup(find_data.cFileName);
-			if(units[s_count].name == NULL) { free_units(s_count, units); return ERR_ALLOC_FAILED; }
+			// Skip dotted files if allowed
+			if(find_data.cFileName[0] == '.' && !iidots) { continue; }
 
 			// Skip '.' and '..' as they are useless for 'fzls' purposes
 			if(strcmp(find_data.cFileName, ".") == 0 || strcmp(find_data.cFileName, "..") == 0) { continue; }
+
+			// Take name
+			units[s_count].name = strdup(find_data.cFileName);
+			if(units[s_count].name == NULL) { free_units(s_count, units); return ERR_ALLOC_FAILED; }
 
 			// Take name width and calculate longest
 			{
@@ -107,12 +110,15 @@ Error fetch_for_units(const char* ipath, size_t* oc, FUnit** ounits, size_t* oma
 				units = new_units;
 			}
 
-			// Take name
-			units[s_count].name = strdup(entry->d_name);
-			if(units[s_count].name == NULL) { free_units(s_count, units); return ERR_ALLOC_FAILED; }
+			// Skip dotted files if allowed
+			if(entry->d_name[0] == '.' && !iidots) { continue; }
 
 			// Skip '.' and '..' as they are useless for 'fzls' purposes
 			if(strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) { continue; }
+
+			// Take name
+			units[s_count].name = strdup(entry->d_name);
+			if(units[s_count].name == NULL) { free_units(s_count, units); return ERR_ALLOC_FAILED; }
 
 			// Take name width and calculate longest
 			{

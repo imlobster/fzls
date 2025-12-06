@@ -1,9 +1,32 @@
 	[ ! PROTOTYPE STAGE ! ]
 
-fzls ('fuzzy list') is a successor to Unix ls that explicitly
-highlights only distinct prefixes of files.
+fzls ('fuzzy list') is the successor to Unix ls, which
+explicitly highlights only the distinct prefixes of file names.
 
-how can it be helpful:
+compile it yourself:
+	you must have CMake installed.
+
+	linux:
+		run ./build.sh
+
+		if you are using mingw, uncomment the corresponding line
+		in ./build.sh
+		it will use default linux -> windows x86-64
+		configuration (./w64-mingw32.cmake). if this is not what
+		you want, proceed to configure it manually.
+
+	windows:
+		mkdir build
+		cd build
+		cmake ..
+		cmake --build . --config Release
+
+config:
+	fzls does not include dynamic configuration.
+	it can be found at ./src/config.h
+	to apply changes, recompile fzls.
+
+how this can be helpful:
 
 	imagine you have a folder:
 
@@ -16,18 +39,16 @@ important
 # ls
 important      important-backup
 
-	you have done some things with the first one, and now you
-	want to get rid of the backup .
+	you did something with the first one and now you want to get rid of the backup.
 
 	you would type this:
 
 # ls
 important      important-backup
-
 # rm -rf i
 
-	then you will most likely hit TAB. There are two possible
-	consequences:
+	then, most likely, you will press the TAB. and after that, there
+	are only two possible scenarios.
 
 	first: you will find that you are very careful
 
@@ -35,30 +56,29 @@ important      important-backup
 important      important-backup
 # rm-rf important-^I
 # rm-rf important-backup
-#
 
 	second: you will get in trouble
 
 # rm -rf
 important      important-backup
 # rm-rf important
-#
 
-	so how does fzls help in that situation?
-	you will just see what you need to type, ALWAYS.
+	so how does fzls help in this situation? you will ALWAYS see
+	only what you need to type.
 
 # fzls
 |I|mportant      |IMPORTANT-|backup
 
-	you will see that if you type 'i', you might get the wrong
-	autocomplete.
+	you will see that if you enter ONLY 'i', incorrect
+	autocomplete may appear.
 
-	and of course, this is not how it really looks. real fzls
-	uses escape codes instead of uppercase or added characters.
+	and, of course, it does not actually look like that. The
+	real fzls uses ansi escape codes instead of capital letters
+	or additional characters.
 
-so... yes. I will not say you can not live without fzls, but if you
-experience the same troubles as I did, feel free to use it.
+so... yes. I would not say that it is impossible to live without
+fzls, but if you encounter the same problems I did, feel free to
+use it.
 
-there are no plans for other sorts, -l or --tree flag, so
-combine fzls with the standard ls, or your preferred one, when
-needed.
+other flags, such as -l or --tree, are not planned, so use fzls
+together with the standard ls or another program you prefer.

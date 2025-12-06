@@ -1,6 +1,6 @@
 #pragma once
 
-typedef enum Errors {
+typedef enum Error {
 	ERR_NO,
 	ERR_ALLOC_FAILED,
 	ERR_PATH_TOO_LONG,

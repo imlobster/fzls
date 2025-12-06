@@ -1,35 +1,39 @@
+#include "config.h"
 #include <stdlib.h>
-#include <stdint.h>
 #include <string.h>
 #include <stdio.h>
 
-#include "config.h"
+#include "args.h"
 #include "errors.h"
 #include "funit.h"
 #include "out.h"
 #include "fmt.h"
 
-
 int main(int argc, char** argv) {
+	// File units array
 	FUnit* units = NULL; size_t unitsc = 0;
 
-	const char* im_here = ".";
+	// Width of the column (for table out)
+	size_t colw = 0;
 
-	// TODO: this also going somwhere to fmt/out
-	int term_width = get_terminal_width();
-	size_t col_width = 0;
+	Config cfg;
 
 	// TODO: make arguments parser
-	// TODO: support '-a'/'--all', '-w N','--width N', '-c'/'--colors'
+	// TODO: support '-a'/'--all', '-w N','--width N', '-c'/'--colors', '--'
+	cfg.path = ".";
+	cfg.all = true;
+	cfg.colors = true;
+	cfg.termw = get_terminal_width();
+	cfg.outt = OUT_TABLE;
 	if(argc - 1 == 1) {
-		im_here = argv[1];
+		cfg.path = argv[1];
 	} else if(argc - 1 > 1) {
 		fprintf(stderr, "fzls: arguments unvalued\n");
 		return -1;
 	}
 
 	{
-		Error err = fetch_for_units(im_here, &unitsc, &units, &col_width);
+		Error err = fetch_for_units(cfg.all, cfg.path, &unitsc, &units, &colw);
 		if(log_error(err) != 0) { exit(err); }
 	}
 
@@ -38,52 +42,9 @@ int main(int argc, char** argv) {
 
 	calculate_prefixes(unitsc, units);
 
-	// TODO: move it somewhere
-	{
-		col_width += FILENAME_PADDING;
-
-		int cols = term_width / col_width;
-		if (cols == 0) cols = 1;
-		int rows = (unitsc + cols - 1) / cols;
-
-		for (int r = 0; r < rows; r++) {
-		for (int c = 0; c < cols; c++) {
-			size_t i = r + c * rows;
-			if (i < unitsc) {
-				uint8_t color = 0;
-
-				switch(units[i].type) {
-					case FREGULAR:
-						if(!units[i].exe) { color = FILECOLOR_REGULAR; }
-						else { color = FILECOLOR_EXECUTABLE; }
-					break;
-					case FDIRECTORY: color = FILECOLOR_DIRECTORY; break;
-					case FSYMLINK: color = FILECOLOR_SYMLINK; break;
-					default: color = FILECOLOR_BROKEN; break;
-				}
-
-				fprintf(stdout,
-					"\033[0;"
-						FILENAME_DIFF_ATTR
-					";%hhum%.*s\033[0;"
-						FILENAME_DEFAULT_ATTR
-					";%hhum%s\033[0m",
-
-					color,
-
-					(int)units[i].diffw,
-					units[i].name,
-
-					color,
-
-					units[i].name + units[i].diffw
-				);
-
-				// Offset
-				for(size_t k = units[i].namedw; k < col_width; ++k) { fputc(' ', stdout); }
-			}
-		} fputc('\n', stdout); }
-	}
+	if(cfg.outt == OUT_ONECOL) { one_out(units, unitsc); }
+	else if(cfg.outt == OUT_TABLE) { table_out(units, unitsc, cfg.termw, colw); }
+	else { fprintf(stderr, "fzls: unknown output type\n"); }
 
 	free_units(unitsc, units);
 	return 0;

@@ -19,6 +19,24 @@ int count_chars_encodeagnostic(const char* is) {
 	} return w;
 }
 
+uint8_t get_color_from_filetype(FType itype, bool iexe) {
+	switch(itype) {
+		case FREGULAR: return iexe ? FILECOLOR_EXECUTABLE : FILECOLOR_REGULAR; break;
+		case FDIRECTORY: return FILECOLOR_DIRECTORY; break;
+		case FSYMLINK: return FILECOLOR_SYMLINK; break;
+		default: return FILECOLOR_BROKEN; break;
+	} return 39;
+}
+
+void calculate_table(size_t ic, int itermw, size_t* icolw, int* ocols, int* orows) {
+	*icolw += FILENAME_PADDING;
+	int cols = itermw / *icolw;
+	if(cols <= 0) { cols = 1; }
+	int rows = (ic + cols - 1) / cols;
+	*ocols = cols; *orows = rows;
+	return;
+}
+
 size_t common_diffw_(const char* ilhs, const char* irhs) {
 	size_t w = 0;
 	while(
