@@ -14,7 +14,41 @@
 	#include <unistd.h>
 #endif
 
-void table_out(FUnit* iunits, size_t iunitsc, int itermw, size_t icolw) {
+void print_funit(uint8_t icolor, size_t idiffw, char* iname, bool icolors) {
+	if(!icolors) {
+		fprintf(stdout,
+			"\033["
+				FILENAME_DIFF_ATTR
+			"m%.*s\033[0;"
+				FILENAME_DEFAULT_ATTR
+			"m%s\033[m",
+
+			(int)idiffw, // Diff size
+			iname,       // Diff slice
+
+			iname + idiffw // Rest slice
+		);
+	} else {
+		fprintf(stdout,
+			"\033[0;"
+				FILENAME_DIFF_ATTR
+			";%hhum%.*s\033[0;"
+				FILENAME_DEFAULT_ATTR
+			";%hhum%s\033[m",
+
+			icolor, // Diff color
+
+			(int)idiffw, // Diff size
+			iname,       // Diff slice
+
+			icolor, // Rest color
+
+			iname + idiffw // Rest slice
+		);
+	}
+}
+
+void table_out(FUnit* iunits, size_t iunitsc, int itermw, size_t icolw, bool icolors) {
 	if(iunitsc <= 0) { return; }
 	int cols, rows; calculate_table(iunitsc, itermw, &icolw, &cols, &rows);
 	char* spacesbuf = malloc(icolw); memset(spacesbuf, ' ', icolw);
@@ -22,52 +56,26 @@ void table_out(FUnit* iunits, size_t iunitsc, int itermw, size_t icolw) {
 	for(int r = 0; r < rows; r++) {
 	for(int c = 0; c < cols; c++) {
 		size_t i = r + c * rows; if(i >= iunitsc) { break; }
-		uint8_t color = get_color_from_filetype(iunits[i].type, iunits[i].exe);
 
-		fprintf(stdout,
-			"\033[0;"
-				FILENAME_DIFF_ATTR
-			";%hhum%.*s\033[0;"
-				FILENAME_DEFAULT_ATTR
-			";%hhum%s\033[0m",
+		uint8_t color = FILECOLOR_BROKEN; if(icolors) { color = get_color_from_filetype(iunits[i].type, iunits[i].exe); }
 
-			color, // Diff color
-
-			(int)iunits[i].diffw, // Diff size
-			iunits[i].name,       // Diff slice
-
-			color, // Rest color
-
-			iunits[i].name + iunits[i].diffw // Rest slice
-		);
+		print_funit(color, iunits[i].diffw, iunits[i].name, icolors);
 
 		// Column offset
 		size_t spacesn = icolw - iunits[i].namedw;
 		if(spacesn > 0 && i != iunitsc - 1) { fwrite(spacesbuf, 1, spacesn, stdout); }
-	} fputc('\n', stdout); } return;
+	} fputc('\n', stdout); }
+
+	free(spacesbuf);
+	return;
 }
 
-void one_out(FUnit* iunits, size_t iunitsc) {
+void one_out(FUnit* iunits, size_t iunitsc, bool icolors) {
 	if(iunitsc <= 0) { return; }
 	for(size_t i = 0; i < iunitsc; ++i) {
-		uint8_t color = get_color_from_filetype(iunits[i].type, iunits[i].exe);
-
-		fprintf(stdout,
-			"\033[0;"
-				FILENAME_DIFF_ATTR
-			";%hhum%.*s\033[0;"
-				FILENAME_DEFAULT_ATTR
-			";%hhum%s\033[0m\n",
-
-			color, // Diff color
-
-			(int)iunits[i].diffw, // Diff size
-			iunits[i].name,       // Diff slice
-
-			color, // Rest color
-
-			iunits[i].name + iunits[i].diffw // Rest slice
-		);
+		uint8_t color = FILECOLOR_BROKEN; if(icolors) { color = get_color_from_filetype(iunits[i].type, iunits[i].exe); }
+		print_funit(color, iunits[i].diffw, iunits[i].name, icolors);
+		fputc('\n', stdout);
 	} return;
 }
 

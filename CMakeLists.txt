@@ -12,6 +12,7 @@ set(SOURCES
 	src/out.c
 	src/errors.c
 	src/fmt.c
+	src/args.c
 )
 
 add_executable(fzls ${SOURCES})

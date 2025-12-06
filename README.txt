@@ -1,7 +1,7 @@
 	[ ! PROTOTYPE STAGE ! ]
 
 fzls ('fuzzy list') is the successor to Unix ls, which
-explicitly highlights only the distinct prefixes of file names.
+explicitly highlights the distinct prefixes of file names.
 
 compile it yourself:
 	you must have CMake installed.
@@ -10,10 +10,9 @@ compile it yourself:
 		run ./build.sh
 
 		if you are using mingw, uncomment the corresponding line
-		in ./build.sh
-		it will use default linux -> windows x86-64
-		configuration (./w64-mingw32.cmake). if this is not what
-		you want, proceed to configure it manually.
+		in ./build.sh it will use default linux -> windows
+		x86-64 configuration (./w64-mingw32.cmake). if this is
+		not what you want, proceed to configure it manually.
 
 	windows:
 		mkdir build
@@ -39,7 +38,8 @@ important
 # ls
 important      important-backup
 
-	you did something with the first one and now you want to get rid of the backup.
+	you did something with the first one and now you want to get
+	rid of the backup.
 
 	you would type this:
 
@@ -47,8 +47,8 @@ important      important-backup
 important      important-backup
 # rm -rf i
 
-	then, most likely, you will press the TAB. and after that, there
-	are only two possible scenarios.
+	then, most likely, you will press the TAB. and after that,
+	there are only two possible scenarios.
 
 	first: you will find that you are very careful
 
@@ -64,7 +64,7 @@ important      important-backup
 # rm-rf important
 
 	so how does fzls help in this situation? you will ALWAYS see
-	only what you need to type.
+	what you need to type.
 
 # fzls
 |I|mportant      |IMPORTANT-|backup

@@ -13,26 +13,16 @@ int main(int argc, char** argv) {
 	// File units array
 	FUnit* units = NULL; size_t unitsc = 0;
 
-	// Width of the column (for table out)
-	size_t colw = 0;
-
+	// Config
 	Config cfg;
+	size_t colw = 0; // Width of the column (for table out)
 
-	// TODO: make arguments parser
-	// TODO: support '-a'/'--all', '-w N','--width N', '-c'/'--colors', '--'
-	cfg.path = ".";
-	cfg.all = true;
-	cfg.colors = true;
-	cfg.termw = get_terminal_width();
-	cfg.outt = OUT_TABLE;
-	if(argc - 1 == 1) {
-		cfg.path = argv[1];
-	} else if(argc - 1 > 1) {
-		fprintf(stderr, "fzls: arguments unvalued\n");
-		return -1;
+	{ // Get config
+		Error err = get_config_from_args(argc, argv, &cfg);
+		if(log_error(err) != 0) { exit(err); }
 	}
 
-	{
+	{ // Get files
 		Error err = fetch_for_units(cfg.all, cfg.path, &unitsc, &units, &colw);
 		if(log_error(err) != 0) { exit(err); }
 	}
@@ -40,10 +30,12 @@ int main(int argc, char** argv) {
 	// Sort alphabetical
 	qsort(units, unitsc, sizeof(FUnit), funit_name_compare);
 
+	// fzls main function
 	calculate_prefixes(unitsc, units);
 
-	if(cfg.outt == OUT_ONECOL) { one_out(units, unitsc); }
-	else if(cfg.outt == OUT_TABLE) { table_out(units, unitsc, cfg.termw, colw); }
+	// Output files list on the screen
+	if(cfg.outt == OUT_ONECOL) { one_out(units, unitsc, cfg.colors); }
+	else if(cfg.outt == OUT_TABLE) { table_out(units, unitsc, cfg.termw, colw, cfg.colors); }
 	else { fprintf(stderr, "fzls: unknown output type\n"); }
 
 	free_units(unitsc, units);
