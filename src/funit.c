@@ -79,7 +79,7 @@ Error fetch_for_units(const char* ipath, size_t* oc, FUnit** ounits, size_t* oma
 			// Take file type
 			if(find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
 				units[s_count].type = FDIRECTORY;
-			} else if(find_data.dwFileAttributes & FILE_REPARSE_POINT) {
+			} else if(find_data.dwFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) {
 				units[s_count].type = FSYMLINK;
 			} else {
 				units[s_count].type = FREGULAR;

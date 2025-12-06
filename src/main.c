@@ -3,22 +3,12 @@
 #include <string.h>
 #include <stdio.h>
 
+#include "config.h"
 #include "errors.h"
 #include "funit.h"
 #include "out.h"
 #include "fmt.h"
 
-#define FILENAME_PADDING 2
-
-#define FILECOLOR_REGULAR    39
-#define FILECOLOR_DIRECTORY  34
-#define FILECOLOR_SYMLINK    36
-#define FILECOLOR_EXECUTABLE 32
-
-#define FILECOLOR_BROKEN     31
-
-#define FILENAME_DIFF_ATTR    "7"
-#define FILENAME_DEFAULT_ATTR "0"
 
 int main(int argc, char** argv) {
 	FUnit* units = NULL; size_t unitsc = 0;
@@ -54,10 +44,10 @@ int main(int argc, char** argv) {
 
 		int cols = term_width / col_width;
 		if (cols == 0) cols = 1;
-		size_t rows = (unitsc + cols - 1) / cols;
+		int rows = (unitsc + cols - 1) / cols;
 
-		for (size_t r = 0; r < rows; r++) {
-		for (size_t c = 0; c < cols; c++) {
+		for (int r = 0; r < rows; r++) {
+		for (int c = 0; c < cols; c++) {
 			size_t i = r + c * rows;
 			if (i < unitsc) {
 				uint8_t color = 0;

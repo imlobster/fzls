@@ -1,6 +1,9 @@
 # cmake
 /build/
 
+# clangd
+/.cache/
+
 # tests
 /test/
 

@@ -1,3 +1,4 @@
+#include "config.h"
 #include "fmt.h"
 
 #include <stddef.h>
@@ -27,14 +28,21 @@ size_t common_diffw_(const char* ilhs, const char* irhs) {
 	return w;
 }
 
+// SOMEDAY: i will move it to prefix tree
 void calculate_prefixes(size_t ic, FUnit* iunits) {
 	// Iterate through every file unit
 	for(size_t i = 0; i < ic; ++i) {
 		size_t namew = strlen(iunits[i].name);
 		size_t diffw = 0;
 
+		#ifdef RAISE_PREFIX_MINIMUM_TO_2
+			size_t min_diffw = (iunits[i].dot && namew >= 2) ? 2 : 1;
+		#else
+			size_t min_diffw = 1;
+		#endif
+
 		// Iterate through the name string
-		for(size_t w = 1; w <= namew; ++w) {
+		for(size_t w = min_diffw; w <= namew; ++w) {
 			size_t max_commonw = namew;
 
 			// Iterate through every file unit

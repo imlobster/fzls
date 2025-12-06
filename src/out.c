@@ -1,3 +1,4 @@
+#include "config.h"
 #include "out.h"
 
 #ifdef _WIN32
@@ -5,10 +6,6 @@
 #else
 	#include <sys/ioctl.h>
 	#include <unistd.h>
-#endif
-
-#ifndef TERMWIDTH_FALLBACK
-	#define TERMWIDTH_FALLBACK 80
 #endif
 
 int get_terminal_width(void) {

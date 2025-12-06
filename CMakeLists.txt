@@ -16,14 +16,18 @@ set(SOURCES
 
 add_executable(fzls ${SOURCES})
 
-if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+if (CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID MATCHES "Clang")
 	target_compile_options(fzls PRIVATE
-		-static
-		-flto
-		-ffast-math
+		-flto -ffast-math -ffast-math
 
 		-Ofast
 
 		-Wall -Wextra -Werror=return-type
 	)
+elseif (CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+    target_compile_options(fzls PRIVATE
+        /O2
+        /W4
+        /permissive-
+    )
 endif()
