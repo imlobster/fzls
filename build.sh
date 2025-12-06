@@ -14,8 +14,8 @@ printf "\nbuilding...\n\n"
 mkdir -p build
 cd build || exit 1
 
-cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
-#cmake .. -DCMAKE_TOOLCHAIN_FILE=../w64-mingw32.cmake
+#cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
+cmake .. -DCMAKE_TOOLCHAIN_FILE=../w64-mingw32.cmake
 cmake --build .
 
 cd ..

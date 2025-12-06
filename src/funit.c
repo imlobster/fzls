@@ -38,15 +38,13 @@ Error fetch_for_units(bool iidots, const char* ipath, size_t* oc, FUnit** ounits
 	size_t max_display_width = 0;
 
 	#ifdef _WIN32
-		char path[MAX_PATH];
+		wchar_t path[MAX_PATH];
+		if(MultiByteToWideChar(CP_UTF8, 0, ipath, -1, path, MAX_PATH) == 0) { free(units); return ERR_PATH_TOO_LONG; }
 
-		{
-			int written = snprintf(path, MAX_PATH, "%s\\*", ipath);
-			if(written > MAX_PATH) { free(units); return ERR_PATH_TOO_LONG; }
-		}
+		wcscat_s(path, MAX_PATH, L"\\*");
 
-		WIN32_FIND_DATA find_data;
-		HANDLE find_handle = FindFirstFile(path, &find_data);
+		WIN32_FIND_DATAW find_data;
+		HANDLE find_handle = FindFirstFileW(path, &find_data);
 
 		if(find_handle == INVALID_HANDLE_VALUE) { free(units); return ERR_FETCH_ERROR; }
 
@@ -59,14 +57,22 @@ Error fetch_for_units(bool iidots, const char* ipath, size_t* oc, FUnit** ounits
 			}
 
 			// Skip dotted files if allowed
-			if(find_data.cFileName[0] == '.' && !iidots) { continue; }
+			if(find_data.cFileName[0] == L'.' && !iidots) { continue; }
 
 			// Skip '.' and '..' as they are useless for 'fzls' purposes
-			if(strcmp(find_data.cFileName, ".") == 0 || strcmp(find_data.cFileName, "..") == 0) { continue; }
+			if(wcscmp(find_data.cFileName, L".") == 0 || wcscmp(find_data.cFileName, L"..") == 0) { continue; }
 
-			// Take name
-			units[s_count].name = strdup(find_data.cFileName);
-			if(units[s_count].name == NULL) { free_units(s_count, units); return ERR_ALLOC_FAILED; }
+			{ // Take name
+				int utf8w = WideCharToMultiByte(CP_UTF8, 0, find_data.cFileName, -1, NULL, 0, NULL, NULL);
+				if(utf8w == 0) { free_units(s_count, units); return ERR_ALLOC_FAILED; }
+				units[s_count].name = malloc(utf8w);
+				if(units[s_count].name == NULL) { free_units(s_count, units); return ERR_ALLOC_FAILED; }
+				if(WideCharToMultiByte(CP_UTF8, 0, find_data.cFileName, -1, units[s_count].name, utf8w, NULL, NULL) == 0) {
+					free(units[s_count].name);
+					free_units(s_count, units);
+					return ERR_ALLOC_FAILED;
+				}
+			}
 
 			// Take name width and calculate longest
 			{
@@ -92,7 +98,7 @@ Error fetch_for_units(bool iidots, const char* ipath, size_t* oc, FUnit** ounits
 			units[s_count].exe = false;
 
 			++s_count;
-		} while(FindNextFile(find_handle, &find_data));
+		} while(FindNextFileW(find_handle, &find_data));
 
 		FindClose(find_handle);
 	#else

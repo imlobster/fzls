@@ -3,6 +3,10 @@
 #include <string.h>
 #include <stdio.h>
 
+#ifdef _WIN32
+	#include <windows.h>
+#endif
+
 #include "args.h"
 #include "errors.h"
 #include "funit.h"
@@ -10,6 +14,11 @@
 #include "fmt.h"
 
 int main(int argc, char** argv) {
+	#ifdef _WIN32
+		SetConsoleOutputCP(CP_UTF8);
+		SetConsoleCP(CP_UTF8);
+	#endif
+
 	// File units array
 	FUnit* units = NULL; size_t unitsc = 0;
 
