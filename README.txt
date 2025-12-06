@@ -3,6 +3,16 @@
 fzls ('fuzzy list') is the successor to Unix ls, which
 explicitly highlights the distinct prefixes of file names.
 
+usage:
+	-a/--all         show dotted files
+	-c/--color       enable colors
+	-w N/--width N   specify terminal width
+	-1/--one-column  display in one column
+
+	--               stop arguments parsing, promising the next argument will be path
+
+	-?/--help        this text
+
 compile it yourself:
 	you must have CMake installed.
 
