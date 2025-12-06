@@ -1,4 +1,4 @@
-#include "config.h"
+#include "../config.h"
 #include "fmt.h"
 
 #include <stddef.h>

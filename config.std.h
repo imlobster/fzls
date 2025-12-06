@@ -1,6 +1,7 @@
 #pragma once
 
 	/* Fuzzy List Config */
+// COPY AND RENAME THIS FILE TO config.h
 
 // Raise minimal prefix for the dotted files
 // to avoid collisions with '..' suggestion

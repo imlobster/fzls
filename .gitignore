@@ -16,3 +16,6 @@
 
 # binary files
 /bin/
+
+# ignore test config
+/config.h

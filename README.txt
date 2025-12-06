@@ -22,7 +22,7 @@ compile it yourself:
 
 config:
 	fzls does not include dynamic configuration.
-	it can be found at ./src/config.h
+	it can be found at ./config.std.h
 	to apply changes, recompile fzls.
 
 how this can be helpful:
