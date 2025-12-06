@@ -65,13 +65,13 @@ important      important-backup
 # rm -rf i^I
 important      important-backup
 # rm-rf important-^I
-# rm-rf important-backup
+# rm-rf important-backup^M
 
 	second: you will get in trouble
 
-# rm -rf
+# rm -rf i^I
 important      important-backup
-# rm-rf important
+# rm-rf important^M
 
 	so how does fzls help in this situation? you will ALWAYS see
 	what you need to type.
