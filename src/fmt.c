@@ -1,4 +1,6 @@
 #include "../config.h"
+#include "stdconfig.h"
+
 #include "fmt.h"
 
 #include <stddef.h>

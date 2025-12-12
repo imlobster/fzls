@@ -1,4 +1,6 @@
 #include "../config.h"
+#include "stdconfig.h"
+
 #include "out.h"
 
 #include <stdlib.h>

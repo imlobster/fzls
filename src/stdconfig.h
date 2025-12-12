@@ -1,0 +1,28 @@
+#pragma once
+#ifndef TERMWIDTH_FALLBACK
+	#define TERMWIDTH_FALLBACK 80
+#endif
+#ifndef FILENAME_PADDING
+	#define FILENAME_PADDING 2
+#endif
+#ifndef FILECOLOR_REGULAR
+	#define FILECOLOR_REGULAR 39
+#endif
+#ifndef FILECOLOR_DIRECTORY
+	#define FILECOLOR_DIRECTORY 34
+#endif
+#ifndef FILECOLOR_SYMLINK
+	#define FILECOLOR_SYMLINK 36
+#endif
+#ifndef FILECOLOR_EXECUTABLE
+	#define FILECOLOR_EXECUTABLE 32
+#endif
+#ifndef FILECOLOR_BROKEN
+	#define FILECOLOR_BROKEN 31
+#endif
+#ifndef FILENAME_DIFF_ATTR
+	#define FILENAME_DIFF_ATTR "7"
+#endif
+#ifndef FILENAME_DEFAULT_ATTR
+	#define FILENAME_DEFAULT_ATTR "0"
+#endif
